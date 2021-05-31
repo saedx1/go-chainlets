@@ -25,21 +25,6 @@ func (g Graph) ExcludePkgs(pkgs []string) Graph {
 	return gg
 }
 
-func (g Graph) excludePkg(pkg string) Graph {
-	i := 0
-	for {
-		if i >= len(g) {
-			break
-		}
-		if strings.Contains(g[i].Pkg, pkg) {
-			g = append(g[:i], g[i+1:]...)
-		} else {
-			i++
-		}
-	}
-	return g
-}
-
 // Chains returns a slice of chains that end with the specified pkg
 func (g Graph) Chains(pkg string) []Chain {
 	visited := map[string]bool{}
@@ -77,6 +62,21 @@ func (g Graph) Chains(pkg string) []Chain {
 	}
 
 	return finished
+}
+
+func (g Graph) excludePkg(pkg string) Graph {
+	i := 0
+	for {
+		if i >= len(g) {
+			break
+		}
+		if strings.Contains(g[i].Pkg, pkg) {
+			g = append(g[:i], g[i+1:]...)
+		} else {
+			i++
+		}
+	}
+	return g
 }
 
 // StrToGraph takes a `go mod graph` as a string and returns a Graph
