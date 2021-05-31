@@ -17,13 +17,15 @@ type Graph []edge
 
 // ExcludePkgs filters the graph to a version that doesn't include the passed pkg in
 // any directed pair as a dependant (Pkg)
-func (g Graph) ExcludePkgs(pkgs []string) {
+func (g Graph) ExcludePkgs(pkgs []string) Graph {
+	var gg Graph
 	for _, i := range pkgs {
-		g.excludePkg(i)
+		gg = g.excludePkg(i)
 	}
+	return gg
 }
 
-func (g Graph) excludePkg(pkg string) {
+func (g Graph) excludePkg(pkg string) Graph {
 	i := 0
 	for {
 		if i >= len(g) {
@@ -35,14 +37,15 @@ func (g Graph) excludePkg(pkg string) {
 			i++
 		}
 	}
+	return g
 }
 
 // Chains returns a slice of chains that end with the specified pkg
-func (g Graph) Chains(pkg string) []*Chain {
+func (g Graph) Chains(pkg string) []Chain {
 	visited := map[string]bool{}
 
-	unfinished := []*Chain{{Pkg: pkg, Rest: nil}}
-	finished := []*Chain{}
+	unfinished := []Chain{{Pkg: pkg, Rest: nil}}
+	finished := []Chain{}
 
 	for len(unfinished) != 0 {
 		chain := unfinished[0]
@@ -57,11 +60,11 @@ func (g Graph) Chains(pkg string) []*Chain {
 			visited[key] = true
 		}
 
-		needsPkg := []*Chain{}
+		needsPkg := []Chain{}
 		for i := range g {
 			if g[i].Dependency == chain.Pkg {
 
-				needsPkg = append(needsPkg, &Chain{Pkg: g[i].Pkg, Rest: chain})
+				needsPkg = append(needsPkg, Chain{Pkg: g[i].Pkg, Rest: &chain})
 			}
 		}
 
