@@ -4,7 +4,7 @@ const _separator = " -> "
 
 // Chain is a linked list-like representation of a dependency chain
 type Chain struct {
-	Pkg  string // name of the dependant Pkg
+	Pkg  string // name of the dependent Pkg
 	Rest *Chain // the chain that Pkg depends on
 }
 

@@ -12,11 +12,11 @@ func (e edge) String() string {
 	return e.Pkg + " " + e.Dependency
 }
 
-// Graph represents a dependecy graph comprised of (Pkg -> Dependecy) directed pairs
+// Graph represents a dependency graph comprised of (Pkg -> Dependency) directed pairs
 type Graph []edge
 
 // ExcludePkgs filters the graph to a version that doesn't include the passed pkg in
-// any directed pair as a dependant (Pkg)
+// any directed pair as a dependent (Pkg)
 func (g Graph) ExcludePkgs(pkgs []string) Graph {
 	var gg Graph
 	for _, i := range pkgs {
