@@ -7,7 +7,7 @@ import (
 
 func TestEdgeString(t *testing.T) {
 	expectedVal := "pkgA pkgB"
-	e := edge{Pkg: "pkgA", Dependency: "pkgB"}
+	e := Edge{Pkg: "pkgA", Dependency: "pkgB"}
 	val := e.String()
 	if val != expectedVal {
 		t.Errorf("Incorrect result; expected %v, found %v", expectedVal, val)
@@ -15,7 +15,7 @@ func TestEdgeString(t *testing.T) {
 }
 
 func TestStrToGraph(t *testing.T) {
-	expectedG := Graph([]edge{
+	expectedG := Graph([]Edge{
 		{"pkgA", "pkgB"},
 		{"pkgA", "pkgC"},
 		{"pkgC", "pkgD"},
@@ -36,7 +36,7 @@ func TestStrToGraph(t *testing.T) {
 }
 
 func TestGraphExcludePkgs(t *testing.T) {
-	expectedG := Graph([]edge{
+	expectedG := Graph([]Edge{
 		{"pkgA", "pkgB"},
 		{"pkgA", "pkgC"},
 	})
@@ -47,7 +47,7 @@ func TestGraphExcludePkgs(t *testing.T) {
 	pkgD pkgF
 	pkgD pkgG`
 	g := StrToGraph(graphStr)
-	g = g.ExcludePkgs([]string{"pkgC", "pkgD"})
+	g.ExcludePkgs([]string{"pkgC", "pkgD"})
 
 	if !reflect.DeepEqual(expectedG, g) {
 		t.Errorf("Incorrect result; expected %v, found %v", expectedG, g)
@@ -55,12 +55,16 @@ func TestGraphExcludePkgs(t *testing.T) {
 }
 
 func TestGraphChains(t *testing.T) {
-	expectedChains := []Chain{{Pkg: "pkgA", Rest: &Chain{Pkg: "pkgC", Rest: &Chain{Pkg: "pkgD", Rest: &Chain{Pkg: "pkgG", Rest: nil}}}}}
+	expectedChains := []Chain{
+		{Pkg: "pkgA", Rest: &Chain{Pkg: "pkgB", Rest: &Chain{Pkg: "pkgG", Rest: nil}}},
+		{Pkg: "pkgA", Rest: &Chain{Pkg: "pkgC", Rest: &Chain{Pkg: "pkgD", Rest: &Chain{Pkg: "pkgG", Rest: nil}}}},
+	}
 	graphStr := `pkgA pkgB
 	pkgA pkgC
 	pkgC pkgD
 	pkgD pkgF
-	pkgD pkgG`
+	pkgD pkgG
+	pkgB pkgG`
 	g := StrToGraph(graphStr)
 
 	chains := g.Chains("pkgG")

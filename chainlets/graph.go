@@ -4,31 +4,32 @@ import (
 	"strings"
 )
 
-type edge struct {
+type Edge struct {
 	Pkg, Dependency string
 }
 
-func (e edge) String() string {
+func (e Edge) String() string {
 	return e.Pkg + " " + e.Dependency
 }
 
+func (e Edge) Reverse() Edge {
+	return Edge{Pkg: e.Dependency, Dependency: e.Pkg}
+}
+
 // Graph represents a dependency graph comprised of (Pkg -> Dependency) directed pairs
-type Graph []edge
+type Graph []Edge
 
 // ExcludePkgs filters the graph to a version that doesn't include the passed pkg in
 // any directed pair as a dependent (Pkg)
-func (g Graph) ExcludePkgs(pkgs []string) Graph {
-	var gg Graph
+func (g *Graph) ExcludePkgs(pkgs []string) {
 	for _, i := range pkgs {
-		gg = g.excludePkg(i)
+		g.excludePkg(i)
 	}
-	return gg
 }
 
 // Chains returns a slice of chains that end with the specified pkg
 func (g Graph) Chains(pkg string) []Chain {
 	visited := map[string]bool{}
-
 	unfinished := []Chain{{Pkg: pkg, Rest: nil}}
 	finished := []Chain{}
 
@@ -64,19 +65,37 @@ func (g Graph) Chains(pkg string) []Chain {
 	return finished
 }
 
-func (g Graph) excludePkg(pkg string) Graph {
+// HasCircularDep returns true if two packages depend on each other
+func (g Graph) CircularDep() []Edge {
 	i := 0
+	visited := map[Edge]bool{}
+	circular := []Edge{}
 	for {
 		if i >= len(g) {
 			break
 		}
-		if strings.Contains(g[i].Pkg, pkg) {
-			g = append(g[:i], g[i+1:]...)
+		rev := g[i].Reverse()
+		if _, ok := visited[rev]; ok {
+			circular = append(circular, rev)
+		}
+		visited[g[i]] = true
+		i++
+	}
+	return circular
+}
+
+func (g *Graph) excludePkg(pkg string) {
+	i := 0
+	for {
+		if i >= len(*g) {
+			break
+		}
+		if strings.Contains((*g)[i].Pkg, pkg) {
+			*g = append((*g)[:i], (*g)[i+1:]...)
 		} else {
 			i++
 		}
 	}
-	return g
 }
 
 // StrToGraph takes a `go mod graph` as a string and returns a Graph
@@ -91,8 +110,8 @@ func StrToGraph(graph string) Graph {
 	return edges
 }
 
-func strToEdge(line string) *edge {
+func strToEdge(line string) *Edge {
 	deps := strings.Split(strings.Trim(line, " \n\t"), " ")
-	c := edge{Pkg: deps[0], Dependency: deps[1]}
+	c := Edge{Pkg: deps[0], Dependency: deps[1]}
 	return &c
 }

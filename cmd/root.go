@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 
 	"github.com/saedx1/go-chainlets/chainlets"
 	"github.com/spf13/cobra"
@@ -35,6 +36,13 @@ func runChainlets(cmd *cobra.Command, args []string) {
 
 	graph := chainlets.StrToGraph(graphStr)
 	graph.ExcludePkgs(excludePkg)
+
+	circularDeps := graph.CircularDep()
+	if len(circularDeps) != 0 {
+		fmt.Println("Found the following circular deps")
+		fmt.Println(circularDeps)
+		os.Exit(1)
+	}
 
 	chains := graph.Chains(lookForPkg)
 
