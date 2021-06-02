@@ -35,7 +35,7 @@ This is the default mode. Use it if you want to display the full chains that lin
 
 #### Example
 
-Let's say you want to know the chains that end up with `golang.org/x/crypto@v0.0.0-20200622213623-75b288015ac9`, you would the following command (assuming you stored the graph in `mod.graph`):
+Let's say you want to know the chains that end up with `golang.org/x/crypto@v0.0.0-20200622213623-75b288015ac9`, you would run the following command (assuming you stored the graph in `mod.graph`):
 
 ```sh
 go-chainlets mod.graph golang.org/x/crypto@v0.0.0-20190605123033-f99c8df09eb5
@@ -44,7 +44,7 @@ go-chainlets mod.graph golang.org/x/crypto@v0.0.0-20190605123033-f99c8df09eb5
 This will output something like this:
 
 ```sh
-1) 1) github.com/saedx1/go-chainlets -> github.com/spf13/cobra@v1.1.3 -> github.com/spf13/viper@v1.7.0 -> github.com/bketelsen/crypt@v0.0.3-0.20200106085610-5cbc8cc4026c -> golang.org/x/crypto@v0.0.0-20190605123033-f99c8df09eb5
+1) github.com/saedx1/go-chainlets -> github.com/spf13/cobra@v1.1.3 -> github.com/spf13/viper@v1.7.0 -> github.com/bketelsen/crypt@v0.0.3-0.20200106085610-5cbc8cc4026c -> golang.org/x/crypto@v0.0.0-20190605123033-f99c8df09eb5
 2) github.com/saedx1/go-chainlets -> github.com/spf13/cobra@v1.1.3 -> github.com/spf13/viper@v1.7.0 -> github.com/bketelsen/crypt@v0.0.3-0.20200106085610-5cbc8cc4026c -> cloud.google.com/go/firestore@v1.1.0 -> cloud.google.com/go@v0.46.3 -> cloud.google.com/go/datastore@v1.0.0 -> google.golang.org/appengine@v1.6.1 -> golang.org/x/crypto@v0.0.0-20190605123033-f99c8df09eb5
 3) ...
 ```

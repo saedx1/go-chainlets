@@ -1,0 +1,26 @@
+name: Builds
+on: [push]
+jobs:
+  build-binaries:
+    strategy:
+      matrix:
+          goos:
+          - linux
+          - darwin
+          - windows
+          go:
+          - 1.14.x
+          - 1.15.x
+          - 1.16.x
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-${{ matrix.go }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.go }}
+      - run: GOOS=${{ matrix.goos }} go build

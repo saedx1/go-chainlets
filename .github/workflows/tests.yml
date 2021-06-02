@@ -1,28 +1,22 @@
-name: Test
+name: Tests
 on: [push]
 jobs:
   test-codebase:
-    strategy:
-      matrix:
-          goos:
-          - linux
-          - darwin
-          - windows
-          go:
-          - 1.14.x
-          - 1.15.x
-          - 1.16.x
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
-          go-version: ${{ matrix.go }}
+          go-version: 1.16.x
       - uses: actions/cache@v2
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-${{ matrix.go }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-${{ matrix.go }}-
-      - run: GOOS=${{ matrix.goos }} go build
-      - run: pwd
+          key: ${{ runner.os }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}
       - run: go test ./chainlets -count=1
+      - name: Run coverage
+        run: go test -race -coverprofile=coverage.txt -covermode=atomic ./chainlets
+      - name: Upload coverage to Codecov
+        run: bash <(curl -s https://codecov.io/bash)
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
