@@ -79,3 +79,43 @@ func TestGraphChains(t *testing.T) {
 	}
 
 }
+
+func TestEdgeReverse(t *testing.T) {
+	e := Edge{Pkg: "A", Dependency: "B"}.Reverse()
+	expectedEdge := Edge{Pkg: "B", Dependency: "A"}
+	if e != expectedEdge {
+		t.Errorf("Incorrect result; expected %v, found %v", expectedEdge, e)
+	}
+}
+
+func TestGraphCircularDep(t *testing.T) {
+	graphStr := `pkgA pkgB
+	pkgA pkgC
+	pkgC pkgD
+	pkgD pkgF
+	pkgD pkgG`
+	g := StrToGraph(graphStr)
+	res := g.CircularDep()
+	expectedLength := 0
+	if len(res) != expectedLength {
+		t.Errorf("Incorrect result length; expected length %v, found %v", expectedLength, len(res))
+	}
+
+	graphStr = `pkgA pkgB
+	pkgB pkgA
+	pkgC pkgD
+	pkgD pkgC
+	pkgD pkgG`
+	g = StrToGraph(graphStr)
+	res = g.CircularDep()
+	expectedResult := []Edge{{"pkgA", "pkgB"}, {"pkgC", "pkgD"}}
+
+	if len(res) != len(expectedResult) {
+		t.Errorf("Incorrect result length; expected length %v, found %v", len(expectedResult), len(res))
+	}
+
+	if !reflect.DeepEqual(res, expectedResult) {
+		t.Errorf("Incorrect result; expected %v, found %v", expectedResult, res)
+	}
+
+}
