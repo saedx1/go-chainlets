@@ -4,6 +4,7 @@ Chainlets is a tool that allows you to look up the mod graph (mostly generated b
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/saedx1/go-chainlets)](https://goreportcard.com/report/github.com/saedx1/go-chainlets)
 [![GoDoc](https://godoc.org/github.com/saedx1/go-chainlets?status.svg)](https://godoc.org/github.com/saedx1/go-chainlets)
+[![codecov](https://codecov.io/gh/saedx1/go-chainlets/branch/main/graph/badge.svg)](https://codecov.io/gh/saedx1/go-chainlets)
 
 This can be useful in multiple scenarios:
 
