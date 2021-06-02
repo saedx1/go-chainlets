@@ -29,22 +29,12 @@ func (g *Graph) ExcludePkgs(pkgs []string) {
 
 // Chains returns a slice of chains that end with the specified pkg
 func (g Graph) Chains(pkg string) []Chain {
-	visited := map[string]bool{}
 	unfinished := []Chain{{Pkg: pkg, Rest: nil}}
 	finished := []Chain{}
 
 	for len(unfinished) != 0 {
 		chain := unfinished[0]
 		unfinished = unfinished[1:]
-
-		if chain.Rest != nil {
-			key := chain.String()
-			if _, ok := visited[key]; ok {
-				continue
-			}
-
-			visited[key] = true
-		}
 
 		needsPkg := []Chain{}
 		for i := range g {

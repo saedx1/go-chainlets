@@ -63,6 +63,7 @@ func TestGraphChains(t *testing.T) {
 	pkgA pkgC
 	pkgC pkgD
 	pkgD pkgF
+	
 	pkgD pkgG
 	pkgB pkgG`
 	g := StrToGraph(graphStr)
